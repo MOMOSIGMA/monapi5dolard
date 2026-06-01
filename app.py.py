@@ -1,8 +1,8 @@
 from flask import Flask, request, jsonify
-import anthropic
+from groq import Groq
 
 app = Flask(__name__)
-client = anthropic.Anthropic()
+client = Groq()
 
 @app.route('/generate', methods=['GET'])
 def generate():
@@ -12,15 +12,14 @@ def generate():
     if not product:
         return jsonify({"error": "product parameter required"}), 400
     
-    message = client.messages.create(
-        model="claude-haiku-4-5-20251001",
-        max_tokens=200,
+    chat_completion = client.chat.completions.create(
         messages=[
             {"role": "user", "content": f"Write a short compelling product description for: {product}. Keywords: {keywords}. Max 3 sentences."}
-        ]
+        ],
+        model="llama3-8b-8192",
     )
     
-    return jsonify({"description": message.content[0].text})
+    return jsonify({"description": chat_completion.choices[0].message.content})
 
 if __name__ == '__main__':
     app.run()
