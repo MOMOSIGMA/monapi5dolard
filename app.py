@@ -16,7 +16,7 @@ def generate():
         messages=[
             {"role": "user", "content": f"Write a short compelling product description for: {product}. Keywords: {keywords}. Max 3 sentences."}
         ],
-        model="llama3-8b-8192",
+        model="llama-3.3-70b-versatile",
     )
     
     return jsonify({"description": chat_completion.choices[0].message.content})
